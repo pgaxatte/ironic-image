@@ -30,15 +30,52 @@ RUN dd bs=1024 count=2880 if=/dev/zero of=esp.img && \
 
 FROM docker.io/centos:centos8
 
-RUN dnf install -y python3 python3-requests && \
-    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python3 - -b master current && \
-    dnf update -y && \
-    dnf install -y python3-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
-        iproute dnsmasq httpd qemu-img iscsi-initiator-utils parted gdisk psmisc \
-        mariadb-server genisoimage python3-ironic-prometheus-exporter \
-        python3-jinja2 python3-sushy-oem-idrac && \
-    dnf clean all && \
-    rm -rf /var/cache/{yum,dnf}/*
+#RUN dnf install -y python3 python3-requests && \
+#    curl https://raw.githubusercontent.com/openstack/tripleo-repos/master/tripleo_repos/main.py | python3 - -b train current && \
+#    dnf update -y && \
+#    dnf install -y python3-gunicorn openstack-ironic-api openstack-ironic-conductor crudini \
+#        iproute dnsmasq httpd qemu-img iscsi-initiator-utils parted gdisk psmisc \
+#        mariadb-server genisoimage python3-ironic-prometheus-exporter \
+#        python3-jinja2 python3-sushy-oem-idrac && \
+#    dnf clean all && \
+#    rm -rf /var/cache/{yum,dnf}/*
+
+#RUN dnf update -y && \
+#    dnf install -y \
+#        dnsmasq \
+#        gcc \
+#        gdisk \
+#        git \
+#        httpd \
+#        qemu-img \
+#        iproute \
+#        ipmitool \
+#        ipxe-bootimgs \
+#        iscsi-initiator-utils \
+#        mariadb \
+#        parted \
+#        psmisc \
+#        python3-devel \
+#        python3-jinja2 \
+#        python3-pip \
+#        python3-sushy-oem-idrac \
+#        socat \
+#        syslinux \
+#        tftp-server \
+#        xinetd && \
+#    dnf clean all && \
+#    rm -rf /var/cache/{yum,dnf}/* && \
+#    pip3 install --only-binary :all: \
+#        crudini \
+#        git+https://github.com/pgaxatte/ironic.git@ovh/train
+
+RUN yum install -y gcc git python3-devel python3-pip && \
+    pip3 install bindep && \
+    git clone https://github.com/pgaxatte/ironic.git /tmp/ironic && \
+    cd /tmp/ironic && \
+    git checkout ovh/train && \
+    yum install -y $(bindep -b) && \
+    pip3 install .
 
 RUN mkdir -p /tftpboot
 COPY --from=builder /tmp/ipxe/src/bin/undionly.kpxe /tftpboot
@@ -47,9 +84,7 @@ COPY --from=builder /tmp/ipxe/src/bin-x86_64-efi/ipxe.efi /tftpboot
 
 COPY --from=builder /tmp/esp.img /tmp/uefi_esp.img
 
-COPY ./ironic.conf /tmp/ironic.conf
-RUN crudini --merge /etc/ironic/ironic.conf < /tmp/ironic.conf && \
-    rm /tmp/ironic.conf
+COPY ./ironic.conf /etc/ironic/ironic.conf
 
 COPY ./runironic-api.sh /bin/runironic-api
 COPY ./runironic-conductor.sh /bin/runironic-conductor

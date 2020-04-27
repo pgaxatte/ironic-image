@@ -2,4 +2,4 @@
 
 . /bin/configure-ironic.sh
 
-exec /usr/bin/ironic-api --config-file /etc/ironic/ironic.conf
+exec /usr/local/bin/ironic-api --config-file /etc/ironic/ironic.conf

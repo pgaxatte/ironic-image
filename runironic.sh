@@ -9,8 +9,8 @@ rm -rf /shared/log/ironic
 
 mkdir -p /shared/log/ironic
 
-/usr/bin/ironic-conductor &
-/usr/bin/ironic-api &
+/usr/local/bin/ironic-conductor &
+/usr/local/bin/ironic-api &
 
 sleep infinity
 

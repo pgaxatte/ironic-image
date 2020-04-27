@@ -12,4 +12,4 @@ until ironic-dbsync --config-file /etc/ironic/ironic.conf upgrade; do
   sleep 1
 done
 
-exec /usr/bin/ironic-conductor --config-file /etc/ironic/ironic.conf
+exec /usr/local/bin/ironic-conductor --config-file /etc/ironic/ironic.conf
