@@ -7,6 +7,10 @@ MARIADB_PASSWORD=${MARIADB_PASSWORD:-"change_me"}
 NUMPROC=$(cat /proc/cpuinfo  | grep "^processor" | wc -l)
 NUMWORKERS=$(( NUMPROC < 12 ? NUMPROC : 12 ))
 
+OVH_CONSUMER_KEY=${OVH_CONSUMER_KEY:-"change_me"}
+OVH_APPLICATION_KEY=${OVH_APPLICATION_KEY:-"change_me"}
+OVH_APPLICATION_SECRET=${OVH_APPLICATION_SECRET:-"change_me"}
+
 # Whether to enable fast_track provisioning or not
 IRONIC_FAST_TRACK=${IRONIC_FAST_TRACK:-true}
 
@@ -39,6 +43,15 @@ fast_track = ${IRONIC_FAST_TRACK}
 
 [inspector]
 endpoint_override = http://${IRONIC_URL_HOST}:5050
+
+[ovhapi]
+consumer_key = '${OVH_CONSUMER_KEY}'
+application_key = '${OVH_APPLICATION_KEY}'
+application_secret = '${OVH_APPLICATION_SECRET}'
+
+endpoint = ovh-eu
+poweroff_script_id = poweroff.ipxe
+boot_script_id = boot.ipxe
 EOF
 
 mkdir -p /shared/html
