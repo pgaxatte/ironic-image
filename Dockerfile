@@ -40,8 +40,15 @@ FROM docker.io/centos:centos8
 #    dnf clean all && \
 #    rm -rf /var/cache/{yum,dnf}/*
 
-RUN yum install -y gcc git python3-devel python3-pip && \
-    pip3 install bindep ironic-prometheus-exporter && \
+RUN yum install -y \
+        gcc \
+        git \
+        python3-devel \
+        python3-pip && \
+    pip3 install \
+        bindep \
+        ironic-prometheus-exporter \
+        git+https://github.com/pixelb/crudini.git@0.9.3 && \
     git clone https://github.com/pgaxatte/ironic.git /tmp/ironic && \
     cd /tmp/ironic && \
     git checkout ovh/train && \
