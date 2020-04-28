@@ -40,37 +40,8 @@ FROM docker.io/centos:centos8
 #    dnf clean all && \
 #    rm -rf /var/cache/{yum,dnf}/*
 
-#RUN dnf update -y && \
-#    dnf install -y \
-#        dnsmasq \
-#        gcc \
-#        gdisk \
-#        git \
-#        httpd \
-#        qemu-img \
-#        iproute \
-#        ipmitool \
-#        ipxe-bootimgs \
-#        iscsi-initiator-utils \
-#        mariadb \
-#        parted \
-#        psmisc \
-#        python3-devel \
-#        python3-jinja2 \
-#        python3-pip \
-#        python3-sushy-oem-idrac \
-#        socat \
-#        syslinux \
-#        tftp-server \
-#        xinetd && \
-#    dnf clean all && \
-#    rm -rf /var/cache/{yum,dnf}/* && \
-#    pip3 install --only-binary :all: \
-#        crudini \
-#        git+https://github.com/pgaxatte/ironic.git@ovh/train
-
 RUN yum install -y gcc git python3-devel python3-pip && \
-    pip3 install bindep && \
+    pip3 install bindep ironic-prometheus-exporter && \
     git clone https://github.com/pgaxatte/ironic.git /tmp/ironic && \
     cd /tmp/ironic && \
     git checkout ovh/train && \
